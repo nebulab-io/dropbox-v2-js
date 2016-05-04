@@ -7,7 +7,7 @@ gulp.task('default', () => {
 });
 
 gulp.task('lint', () => {
-  return gulp.src('src/app.js')
+  return gulp.src('src/*.js')
     .pipe(jscs({fix: true}))
     .pipe(jscs.reporter())
     .pipe(jscs.reporter('fail'))
