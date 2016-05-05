@@ -13,7 +13,9 @@
     "url": "https://github.com/nebulab-io/dropbox-v2-js/issues"
   },
   "dependencies": {
-    "superagent": "^1.8.3"
+    "co": "^4.6.0",
+    "superagent": "^1.8.3",
+    "vo": "^3.1.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.6.0",
