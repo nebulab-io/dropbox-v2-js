@@ -1,10 +1,11 @@
 const gulp = require('gulp');
 const jscs = require('gulp-jscs');
-const babel = require('gulp-babel');
-
-gulp.task('default', () => {
-    
-});
+const browserify = require('browserify');
+const deamdify = require('deamdify');
+const deglobalify = require('deglobalify');
+const source = require('vinyl-source-stream');
+const babelify = require('babelify');
+const es6ify = require('es6ify');
 
 gulp.task('lint', () => {
   return gulp.src('src/*.js')
@@ -14,11 +15,16 @@ gulp.task('lint', () => {
     .pipe(gulp.dest('src'));
 });
 
-gulp.task('babel', () => {
-  gulp.src('src/app.js')
-    .pipe(babel({
-      presets: ['es2015'],
-      plugins: ['transform-runtime']
-    }))
-    .pipe(gulp.dest('dist'));
+gulp.task('browserify', () => {
+  var b = browserify({
+    entries: [
+      'index.js'
+    ],
+    debug: true,
+    standalone: 'Dropbox'
+  });
+
+  return b.bundle()
+    .pipe(source('app.js'))
+    .pipe(gulp.dest('./build/'));
 });

@@ -18,25 +18,23 @@ var oauth = Dropbox.authenticate({
   require_role: "personal"
 });
 
-console.log(oauth.generateAuthUrl());
-
 
 //prepare server & oauth2 response callback
 var server = new Hapi.Server();
 server.connection({ port: 5050 });
 server.route({
-        method: 'GET',
-        path: '/auth',
-        handler: function (request, reply) {
-          co(function *(){
-            var params = request.query;
-            oauth.getTokenByCode(params.code).then(function(res) {
-              console.log(res);
-            }, function(err) {
-              console.log(err);
-            });
-          });
-        }
+  method: 'GET',
+  path: '/auth',
+  handler: function (request, reply) {
+    co(function *(){
+      var params = request.query;
+      oauth.getTokenByCode(params.code).then(function(res) {
+        console.log(res);
+      }, function(err) {
+        console.log(err);
+      });
+    });
+  }
 });
 
 server.start(function() {
