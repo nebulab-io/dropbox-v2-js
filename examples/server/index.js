@@ -1,14 +1,13 @@
+const Dropbox = require('../../index.js')
+      Hapi = require('hapi'),
+      fs = require('fs'),
+      path = require('path'),
+      Opn = require('opn'),
+      co = require('co'),
+      credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../app.json')));
 
-var Dropbox = require('../src/auth');
-var Hapi = require('hapi');
-var fs = require('fs');
-var path = require('path');
-var Opn = require('opn');
-var co = require('co')
-var credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../app.json')));
-
-//set auth credentials
-var oauth = Dropbox.authenticate({
+//set credentials
+var oauth = new Dropbox({
   client_id: credentials.appKey,
   client_secret: credentials.appSecret,
   redirect_uri: credentials.redirectUri,
@@ -18,15 +17,18 @@ var oauth = Dropbox.authenticate({
   require_role: "personal"
 });
 
-
 //prepare server & oauth2 response callback
 var server = new Hapi.Server();
-server.connection({ port: 5050 });
+
+server.connection({
+  port: 5050
+});
+
 server.route({
   method: 'GET',
   path: '/auth',
-  handler: function (request, reply) {
-    co(function *(){
+  handler: function(request, reply) {
+    co(function * () {
       var params = request.query;
       oauth.getTokenByCode(params.code).then(function(res) {
         console.log(res);
