@@ -10,11 +10,11 @@
 
 <p><strong>Note:</strong> myFunction is stored in an external file called "myScript.js".</p>
 
-<script src="/build/app.js"></script>
+<script src="build/app.js"></script>
 <script>
    window.myFunction= function(argument) {
     
-    oauth = Dropbox.authenticate({
+    oauth = new Dropbox({
       client_id: '5o0jqjozlprkv5q',
       redirect_uri: 'http://localhost:5050/auth',
       response_type: "token",
@@ -23,7 +23,7 @@
       require_role: "personal"
     });
     window.location = oauth.generateAuthUrl();
-    params = oauth.getToken(location.hash.substring(1));
+    //params = oauth.getToken(location.hash.substring(1));
     //token = oauth.getToken(oauth.generateAuthUrl());
     //console.log(oauth.generateAuthUrl());
   }

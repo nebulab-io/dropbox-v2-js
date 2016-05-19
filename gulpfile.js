@@ -1,11 +1,11 @@
-const gulp = require('gulp');
-const jscs = require('gulp-jscs');
-const browserify = require('browserify');
-const deamdify = require('deamdify');
-const deglobalify = require('deglobalify');
-const source = require('vinyl-source-stream');
-const babelify = require('babelify');
-const es6ify = require('es6ify');
+const gulp = require('gulp'),
+      jscs = require('gulp-jscs'),
+      browserify = require('browserify'),
+      deamdify = require('deamdify'),
+      deglobalify = require('deglobalify'),
+      source = require('vinyl-source-stream'),
+      babelify = require('babelify'),
+      es6ify = require('es6ify');
 
 gulp.task('lint', () => {
   return gulp.src('src/*.js')
