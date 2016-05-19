@@ -45,12 +45,13 @@ module.exports = {
       getTokenByUrl: function (queryString) {
         let params = {},
             regex = /([^&=]+)=([^&]*)/g,
-            m;
+            regexResult;
 
-        while (m = regex.exec(queryString)) {
-          params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        while (regexResult = regex.exec(queryString)) {
+          params[decodeURIComponent(regexResult[1])] = decodeURIComponent(regexResult[2]);
         }
 
+        config.accessToken = params.accessToken;
         return params;
       },
 
@@ -62,7 +63,7 @@ module.exports = {
        * @param  {Function} callback
        */
       getTokenByCode: function (code) {
-        return co(function *coGetTokenByCode() {
+        return co(function *() {
           let res = yield request
             .post('https://api.dropboxapi.com/oauth2/token')
             .type('form')
@@ -82,7 +83,7 @@ module.exports = {
             Promise.reject(res.body.error);
           }
 
-          config.token = res.body.access_token;
+          config.accessToken = res.body.access_token;
           return res.body;
         });
       }

@@ -32,6 +32,10 @@ server.route({
       var params = request.query;
       oauth.getTokenByCode(params.code).then(function(res) {
         console.log(res);
+        oauth.revokeAccessToken().then(function() {
+
+          console.log('ok')
+        });
       }, function(err) {
         console.log(err);
       });

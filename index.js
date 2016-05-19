@@ -1,11 +1,22 @@
 'use strict'
 
-const authentication = require('./src/auth.js');
+const authentication = require('./src/auth.js'),
+      authApi = require('./src/api/auth.js');
 
-module.exports = function Dropbox(config) {
-  let auth = authentication.authenticate(config);
+module.exports = function Dropbox(config, accessToken) {
+  this.config = config;
+  this.accessToken = accessToken;
 
-  this.generateAuthUrl = auth.generateAuthUrl;
-  this.getTokenByUrl = auth.getTokenByUrl;
-  this.getTokenByCode = auth.getTokenByCode;
+  if(!this.accessToken && !this.config.accessToken) {
+    var auth = authentication.authenticate(this.config);
+
+    this.generateAuthUrl = auth.generateAuthUrl;
+    this.getTokenByUrl = auth.getTokenByUrl;
+    this.getTokenByCode = auth.getTokenByCode;
+
+  } else if(!config.accessToken) {
+    config.accessToken = accessToken;
+  }
+  
+  this.revokeAccessToken = authApi.revokeAccessToken;
 }
