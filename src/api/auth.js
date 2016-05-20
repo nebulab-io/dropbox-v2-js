@@ -13,10 +13,9 @@ module.exports = {
   revokeAccessToken: function () {
     var th = this;
     return co(function *() {
-      console.log(th.accessToken || th.config.accessToken);
       let res = yield request
         .post('https://api.dropboxapi.com/2/auth/token/revoke')
-        .set('Authorization', 'Bearer ' + th.accessToken || th.config.accessToken);
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken));
 
         console.log(res);
 

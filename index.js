@@ -1,7 +1,8 @@
 'use strict'
 
 const authentication = require('./src/auth.js'),
-      authApi = require('./src/api/auth.js');
+      authApi = require('./src/api/auth.js'),
+      files = require('./src/api/files.js');
 
 module.exports = function Dropbox(config, accessToken) {
   this.config = config;
@@ -19,4 +20,6 @@ module.exports = function Dropbox(config, accessToken) {
   }
   
   this.revokeAccessToken = authApi.revokeAccessToken;
+
+  this.copy = files.copy;
 }

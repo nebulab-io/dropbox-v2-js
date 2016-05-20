@@ -26,20 +26,26 @@ server.connection({
 
 server.route({
   method: 'GET',
+  path: '/copy',
+  handler: function(request, reply) {
+    oauth.copy('/teste/guitar.png', '/teste2/guitar3.png').then(function(res) {
+      console.log(res)
+    }, function (err) {
+      console.log(err);
+    });
+  }
+});
+
+server.route({
+  method: 'GET',
   path: '/auth',
   handler: function(request, reply) {
-    co(function * () {
       var params = request.query;
       oauth.getTokenByCode(params.code).then(function(res) {
-        console.log(res);
-        oauth.revokeAccessToken().then(function() {
-
-          console.log('ok')
-        });
+        reply('Yo '+ res.access_token);
       }, function(err) {
         console.log(err);
       });
-    });
   }
 });
 
