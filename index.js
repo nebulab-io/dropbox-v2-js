@@ -1,7 +1,8 @@
 'use strict'
 
 const authentication = require('./src/auth.js'),
-      authApi = require('./src/api/auth.js');
+      authApi = require('./src/api/auth.js'),
+      users = require('./src/api/users.js');
 
 module.exports = function Dropbox(config, accessToken) {
   this.config = config;
@@ -19,4 +20,9 @@ module.exports = function Dropbox(config, accessToken) {
   }
   
   this.revokeAccessToken = authApi.revokeAccessToken;
+  
+  this.getAccount = users.getAccount;
+  this.getAccountBatch = users.getAccountBatch;
+  this.getCurrentAccount = users.getCurrentAccount;
+  this.getSpaceUsage = users.getSpaceUsage;
 }

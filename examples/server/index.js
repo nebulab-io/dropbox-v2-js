@@ -32,10 +32,21 @@ server.route({
       var params = request.query;
       oauth.getTokenByCode(params.code).then(function(res) {
         console.log(res);
-        oauth.revokeAccessToken().then(function() {
+        
+      }, function(err) {
+        console.log(err);
+      });
+    });
+  }
+});
 
-          console.log('ok')
-        });
+server.route({
+  method: 'GET',
+  path: '/user',
+  handler: function(request, reply) {
+    co(function * () {
+      oauth.getSpaceUsage().then(function(res) {
+          console.log(res);
       }, function(err) {
         console.log(err);
       });
