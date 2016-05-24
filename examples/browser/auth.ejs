@@ -9,14 +9,25 @@
 <button type="button" onclick="myFunction()">Try it</button>
 
 <p><strong>Note:</strong> myFunction is stored in an external file called "myScript.js".</p>
+<script src="build/app.js"></script>
 
 <script>
-   window.myFunction= function(argument) {
+    window.myFunction= function(argument) {
     
+    oauth = new Dropbox({
+      client_id: '5o0jqjozlprkv5q',
+      redirect_uri: 'http://localhost:5050/auth',
+      response_type: "token",
+      force_reapprove: false,
+      disable_signup: false,
+      require_role: "personal",
+      state: "nebulab"
+    });
     
-    params = oauth.getToken(location.hash.substring(1));
-    //token = oauth.getToken(oauth.generateAuthUrl());
-    //console.log(oauth.generateAuthUrl());
+    oauth.accessToken = oauth.getTokenByUrl(location.hash.substring(1)).access_token;
+    oauth.getCurrentAccount().then(function(res){
+      console.log(res);
+    })
   }
 </script>
 

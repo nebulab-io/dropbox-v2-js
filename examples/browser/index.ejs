@@ -20,9 +20,10 @@
       response_type: "token",
       force_reapprove: false,
       disable_signup: false,
-      require_role: "personal"
+      require_role: "personal",
+      state: "nebulab"
     });
-    window.location = oauth.generateAuthUrl();
+    window.location = (oauth.generateAuthUrl());
     //params = oauth.getToken(location.hash.substring(1));
     //token = oauth.getToken(oauth.generateAuthUrl());
     //console.log(oauth.generateAuthUrl());

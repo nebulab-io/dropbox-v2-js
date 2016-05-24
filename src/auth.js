@@ -51,8 +51,12 @@ module.exports = {
           params[decodeURIComponent(regexResult[1])] = decodeURIComponent(regexResult[2]);
         }
 
-        config.accessToken = params.accessToken;
-        return params;
+        if(config.state == params.state) {
+          config.accessToken = params.access_token;
+          return params;
+        } else {
+          return false;
+        }
       },
 
       /**
