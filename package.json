@@ -28,6 +28,7 @@
     "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
     "gulp-jscs": "^3.0.2",
+    "nock": "^8.0.0",
     "vinyl-source-stream": "^1.1.0",
     "vision": "^4.1.0"
   }

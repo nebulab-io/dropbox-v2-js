@@ -3,7 +3,8 @@
 const request = require('superagent');
 const co = require('co');
 
-module.exports = {      
+module.exports = {
+  
   /**
    * Function that returns account info for a given account ID.
    * 

@@ -2,7 +2,8 @@
 
 const authentication = require('./src/auth.js'),
       authApi = require('./src/api/auth.js'),
-      users = require('./src/api/users.js');
+      users = require('./src/api/users.js'),
+      files = require('./src/api/files.js');
 
 module.exports = function Dropbox(config, accessToken) {
   this.config = config;
@@ -25,4 +26,6 @@ module.exports = function Dropbox(config, accessToken) {
   this.getAccountBatch = users.getAccountBatch;
   this.getCurrentAccount = users.getCurrentAccount;
   this.getSpaceUsage = users.getSpaceUsage;
+
+  this.download = files.download;
 }
