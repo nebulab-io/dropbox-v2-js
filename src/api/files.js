@@ -394,7 +394,7 @@ module.exports = {
 
       return res.body;
     });
-  },,
+  },
 
   /**
    * A way to quickly get a cursor for the folder's state. Unlike list_folder, 
@@ -431,6 +431,119 @@ module.exports = {
           include_media_info: includeMediaInfo,
           include_deleted: includeDeleted,
           include_has_explicit_shared_members: includeHasExplicitSharedMembers
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * A longpoll endpoint to wait for changes on an account. In conjunction with 
+   * list_folder/continue, this call gives you a low-latency way to monitor an account 
+   * for file changes. The connection will block until there are changes available or
+   * a timeout occurs. This endpoint is useful mostly for client-side apps. 
+   * If you're looking for server-side notifications, check out our webhooks documentation.
+   *
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-longpoll
+   * 
+   * @param {String} cursor - The cursor returned by your last call to list_folder or list_folder/continue.
+   * @param {int} timeout - A timeout in seconds. The request will block for at most this 
+   * length of time, plus up to 90 seconds of random jitter added to avoid the thundering 
+   * herd problem. Care should be taken when using this parameter, as some network 
+   * infrastructure does not support long timeouts. The default for this field is 30.
+   * 
+   * @return {Boolean} changes - Indicates whether new changes are available. 
+   * If true, call list_folder/continue to retrieve the changes.
+   * @return {UInt64?} backoff - If present, backoff for at least this many seconds 
+   * before calling list_folder/longpoll again. This field is optional.
+   **/
+  listFolderLongpoll: function (cursor, timeout) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://notify.dropboxapi.com/2/files/list_folder/longpoll')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          cursor: cursor,
+          timeout: timeout
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * Return revisions of a file
+   *
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_revisions
+   * 
+   * @param {String} path - Path in the user's Dropbox to delete
+   * @param {int} limit - The maximum number of revision entries returned. The default for this field is 10.
+   * 
+   * @return {Object} file revisions
+   */
+  listRevisions: function (path) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/list_revisions')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path,
+          limit: limit
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * Move a file or folder to a different location in the user's Dropbox.
+   * If the source path is a folder all its contents will be moved.
+   *
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-move
+   * 
+   * @param  {String} fromPath - Path in the user's Dropbox to be copied or moved.
+   * @param  {String} toPath - Path in the user's Dropbox that is the destination.
+   * 
+   * @return {Object} file info
+   */
+  move: function (fromPath, toPath) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/move')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          from_path: fromPath,
+          to_path: toPath
         });
 
       if (Object.keys(res.body).length === 0) {
