@@ -28,7 +28,7 @@ server.route({
   method: 'GET',
   path: '/auth',
   handler: function(request, reply) {
-    co(function * () {
+    co(function *() {
       var params = request.query;
       oauth.getTokenByCode(params.code).then(function(res) {
         console.log(res);
@@ -44,8 +44,22 @@ server.route({
   method: 'GET',
   path: '/user',
   handler: function(request, reply) {
-    co(function * () {
+    co(function *() {
       oauth.getSpaceUsage().then(function(res) {
+          console.log(res);
+      }, function(err) {
+        console.log(err);
+      });
+    });
+  }
+});
+
+server.route({
+  method: 'GET',
+  path: '/files',
+  handler: function(request, reply) {
+    co(function *() {
+      oauth.download('/123.jpg').then(function(res) {
           console.log(res);
       }, function(err) {
         console.log(err);

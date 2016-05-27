@@ -25,7 +25,7 @@
     });
     
     oauth.accessToken = oauth.getTokenByUrl(location.hash.substring(1)).access_token;
-    oauth.getCurrentAccount().then(function(res){
+    oauth.download('/123.jpg').then(function(res){
       console.log(res);
     })
   }
