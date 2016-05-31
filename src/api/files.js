@@ -6,9 +6,6 @@ const co = require('co');
 module.exports = {
 
   /**
-   * Copy a file or folder to a different location in the user's Dropbox. 
-   * If the source path is a folder all its contents will be copied.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-copy
    * 
    * @param  {String} fromPath - Path in the user's Dropbox to be copied or moved.
@@ -40,10 +37,6 @@ module.exports = {
   },
 
   /**
-   * Get a copy reference to a file or folder. This reference string can 
-   * be used to save that file or folder to another user's Dropbox by passing 
-   * it to copy_reference/save
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-copy_reference-get
    * 
    * @param  {String} path - The path to the file or folder you want to get a copy reference to.
@@ -73,8 +66,6 @@ module.exports = {
   },
 
   /**
-   * Save a copy reference returned by copy_reference/get to the user's Dropbox.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-copy_reference-save
    * 
    * @param  {String} copyReference - A copy reference returned by copy_reference/get
@@ -105,8 +96,6 @@ module.exports = {
   },
 
   /**
-   * Function that returns account info for the current account
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-create_folder
    * 
    * @param {String} path - Path in the user's Dropbox to create
@@ -136,12 +125,6 @@ module.exports = {
   },
 
   /**
-   * Delete the file or folder at a given path. 
-   * If the path is a folder, all its contents will be deleted too.
-   * A successful response indicates that the file or folder was deleted. 
-   * The returned metadata will be the corresponding FileMetadata or 
-   * FolderMetadata for the item at time of deletion, and not a DeletedMetadata object.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-delete
    * 
    * @param {String} path - Path in the user's Dropbox to delete
@@ -171,8 +154,6 @@ module.exports = {
   },
 
   /**
-   * Download a file from a user's Dropbox.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-download
    * 
    * @param {String} path - Path in the user's Dropbox to download
@@ -191,9 +172,6 @@ module.exports = {
   },
 
   /**
-   * Returns the metadata for a file or folder.
-   * Note: Metadata for the root folder is unsupported.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-get_metadata
    *
    * @param {String} path - Path in the user's Dropbox to download   * 
@@ -235,10 +213,6 @@ module.exports = {
   },
 
   /**
-   * Get a preview for a file. Currently previews are only generated for the files with the 
-   * following extensions: .doc, .docx, .docm, .ppt, .pps, .ppsx, .ppsm, .pptx, .pptm, 
-   * .xls, .xlsx, .xlsm, .rtf
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-get_preview
    * 
    * @param {String} path - Path in the user's Dropbox to download
@@ -257,11 +231,8 @@ module.exports = {
   },
 
   /**
-   * Get a temporary link to stream content of a file. This link will expire in four hours and afterwards you 
-   * will get 410 Gone. Content-Type of the link is determined automatically by the file's mime type.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-get_temporary_link
-   
+   *   
    * @param {String} path - Path in the user's Dropbox to download
    *
    * @return {Object} file temporary link
@@ -290,11 +261,6 @@ module.exports = {
   },
 
   /**
-   * Get a thumbnail for an image.
-   * This method currently supports files with the following file extensions: 
-   * jpg, jpeg, png, tiff, tif, gif and bmp. Photos that are larger than 20MB 
-   * in size won't be converted to a thumbnail.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-get_get_thumbnail
    * 
    * @param {String} path - Path in the user's Dropbox to download
@@ -307,19 +273,23 @@ module.exports = {
    */
   getThumbnail: function (path, format, size) {
     var th = this;
+    var args = {};
+
+    args.path = path;
+    args.format = format;
+    args.size = size;
+
     return co(function *() {
       let res = yield request
         .post('https://content.dropboxapi.com/2/files/get_thumbnail')
         .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
-        .set('Dropbox-API-Arg', '{ "path": "' + path + '", "format": "' + format + '", "size": "' + size +'" }');
+        .set('Dropbox-API-Arg', JSON.stringify(args));
 
       console.log(res);
     });
   },
 
   /**
-   * Returns the contents of a folder.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder
    * 
    * @param {String} path - Path in the user's Dropbox to download
@@ -364,9 +334,6 @@ module.exports = {
   },
 
   /**
-   * Once a cursor has been retrieved from list_folder, use this to paginate
-   * through all files and retrieve updates to the folder.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-continue
    * 
    * @param {String} cursor - The cursor returned by your last call to list_folder or list_folder/continue.
@@ -397,11 +364,6 @@ module.exports = {
   },
 
   /**
-   * A way to quickly get a cursor for the folder's state. Unlike list_folder, 
-   * list_folder/get_latest_cursor doesn't return any entries. 
-   * This endpoint is for app which only needs to know about new files and modifications
-   * and doesn't need to know about files that already exist in Dropbox.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-get_latest_cursor
    * 
    * @param {String} path - The path to the folder you want to see the contents of.
@@ -446,12 +408,6 @@ module.exports = {
   },
 
   /**
-   * A longpoll endpoint to wait for changes on an account. In conjunction with 
-   * list_folder/continue, this call gives you a low-latency way to monitor an account 
-   * for file changes. The connection will block until there are changes available or
-   * a timeout occurs. This endpoint is useful mostly for client-side apps. 
-   * If you're looking for server-side notifications, check out our webhooks documentation.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_folder-longpoll
    * 
    * @param {String} cursor - The cursor returned by your last call to list_folder or list_folder/continue.
@@ -490,8 +446,6 @@ module.exports = {
   },
 
   /**
-   * Return revisions of a file
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-list_revisions
    * 
    * @param {String} path - Path in the user's Dropbox to delete
@@ -524,9 +478,6 @@ module.exports = {
   },
 
   /**
-   * Move a file or folder to a different location in the user's Dropbox.
-   * If the source path is a folder all its contents will be moved.
-   *
    * @see https://www.dropbox.com/developers/documentation/http/documentation#files-move
    * 
    * @param  {String} fromPath - Path in the user's Dropbox to be copied or moved.
@@ -545,6 +496,320 @@ module.exports = {
           from_path: fromPath,
           to_path: toPath
         });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/en/help/40
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-permanently_delete
+   * 
+   * @param  {String} path - Path in the user's Dropbox to be deleted
+   */
+  permanentlyDelete: function (path) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/permanently_delete')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-restore
+   * 
+   * @param  {String} path - Path in the user's Dropbox to be deleted
+   * @param  {String} rev - The revision to restore for the file.
+   *
+   * @return {Object} file metadata
+   */
+  restore: function (path, rev) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/restore')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-save_url
+   * 
+   * @param  {String} path - Path in the user's Dropbox to be deleted
+   * @param  {String} url - The URL to be saved.
+   *
+   * @return SaveUrlResult (union)
+   */
+  saveUrl: function (path, url) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/restore')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-save_url-check_job_status
+   * 
+   * @param  {String} async_job_id - Id of the asynchronous job. 
+   * This is the value of a response returned from the method that launched the job.
+   *
+   * @return SaveUrlJobStatus (union)
+   */
+  saveUrlCheckJobStatus: function (asyncJobId) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/save_url/check_job_status')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-search
+   * 
+   * @param {String} path - The path in the user's Dropbox to search. Should probably be a folder.
+   * @param {String} query - The string to search for. The search string is split on spaces 
+   * into multiple tokens. For file name searching, the last token is used for prefix 
+   * matching (i.e. "bat c" matches "bat cave" but not "batman car").
+   * @param {UInt64} start - The starting index within the search results (used for paging).
+   * The default for this field is 0.
+   * @param {UInt64} maxResults - The maximum number of search results to return.
+   * The default for this field is 100.
+   * @param {SearchMode} mode - The search mode (filename, filename_and_content, or deleted_filename). 
+   * Note that searching file content is only available for Dropbox Business accounts. 
+   * The default for this union is filename.
+   */
+  saveUrlCheckJobStatus: function (path, query, start, maxResults, mode) {
+    var th = this;
+    return co(function *() {
+      let res = yield request
+        .post('https://api.dropboxapi.com/2/files/search')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .type('application/json')
+        .send({
+          path: path
+        });
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-upload
+   * 
+   * @param {String} path - Path in the user's Dropbox to save the file.
+   * @param {WriteMode} mode - Selects what to do if the file already exists.
+   * The default for this union is add.
+   * @param {Boolean} autorename - If there's a conflict, as determined by mode,
+   * have the Dropbox server try to autorename the file to avoid conflict.
+   * The default for this field is False.client_modified Timestamp? The value to store as 
+   * the client_modified timestamp. Dropbox automatically records the time at which the 
+   * file was written to the Dropbox servers. It can also record an additional timestamp, 
+   * provided by Dropbox desktop clients, mobile clients, and API apps of when the file was 
+   * actually created or modified. This field is optional.
+   * @param {Boolean} mute - Normally, users are made aware of any file modifications 
+   * in their Dropbox account via notifications in the client software. If true, this 
+   * tells the clients that this modification shouldn't result in a user notification.
+   * The default for this field is False.
+   * 
+   * @return {Object} file info
+   */
+  upload: function (path, mode, autorename, mute, file, clientModified) {
+    var th = this;
+    var args = {};
+
+    args.path = path;
+    args.mode = mode;
+    args.autorename = autorename;
+    args.mute = mute;
+
+    if(clientModified) {
+      args.client_modified = clientModified;
+    }
+
+    return co(function *() {
+      let res = yield request
+        .post('https://content.dropboxapi.com/2/files/upload')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .set('Dropbox-API-Arg', JSON.stringify(args))
+        .attach('file', file);
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-upload_session-append_v2
+   * 
+   * @param {UploadSessionCursor} cursor - Contains the upload session ID and the offset.
+   * @param {Boolean} close - If true, current session will be closed. 
+   * You cannot do upload_session/append any more to current session.
+   * The default for this field is False.
+   */
+  uploadSessionAppend: function (cursor, close) {
+    var th = this;
+    var args = {};
+
+    args.cursor = cursor;
+    args.close = close;
+
+    return co(function *() {
+      let res = yield request
+        .post('https://content.dropboxapi.com/2/files/upload_session/append_v2')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .set('Dropbox-API-Arg', JSON.stringify(args))
+        .attach('file', file);
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-upload_session-finish
+   * 
+   * @param {UploadSessionCursor} cursor - Contains the upload session ID and the offset.
+   * @param {CommitInfo} commit - Contains the path and other optional modifiers for the commit.
+   *
+   * @return {Object} FileMetadata
+   */
+  uploadSessionFinish: function (cursor, commit) {
+    var th = this;
+    var args = {};
+
+    args.cursor = cursor;
+    args.commit = commit;
+
+    return co(function *() {
+      let res = yield request
+        .post('https://content.dropboxapi.com/2/files/upload_session/finish')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .set('Dropbox-API-Arg', JSON.stringify(args))
+        .attach('file', file);
+
+      if (Object.keys(res.body).length === 0) {
+        res.body = JSON.parse(res.text);
+      }
+
+      if (res.body.error) {
+        Promise.reject(res.body.error);
+      }
+
+      return res.body;
+    });
+  },
+
+  /**
+   * @see https://www.dropbox.com/developers/documentation/http/documentation#files-upload_session-start
+   * 
+   * @param {Boolean} close - If true, current session will be closed. 
+   * You cannot do upload_session/append any more to current session.
+   * The default for this field is False.
+   *  
+   * @return {String} session_id
+   */
+  uploadSessionStart: function (close) {
+    var th = this;
+    var args = {};
+
+    args.close = close;
+
+    return co(function *() {
+      let res = yield request
+        .post('https://content.dropboxapi.com/2/files/upload_session/start')
+        .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
+        .set('Dropbox-API-Arg', JSON.stringify(args))
+        .attach('file', file);
 
       if (Object.keys(res.body).length === 0) {
         res.body = JSON.parse(res.text);
