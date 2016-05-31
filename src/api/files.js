@@ -585,7 +585,8 @@ module.exports = {
         .set('Authorization', 'Bearer ' + (th.accessToken || th.config.accessToken))
         .type('application/json')
         .send({
-          path: path
+          path: path,
+          url: url
         });
 
       if (Object.keys(res.body).length === 0) {
