@@ -6,6 +6,7 @@ const Dropbox = require('../../index.js')
       co = require('co'),
       credentials = JSON.parse(fs.readFileSync(path.join(__dirname, '../../app.json')));
 
+
 //set credentials
 var oauth = new Dropbox({
   client_id: credentials.appKey,
@@ -70,13 +71,12 @@ server.route({
   method: 'GET',
   path: '/files',
   handler: function(request, reply) {
-    co(function *() {
       oauth.getTokenByCode(params.code).then(function(res) {
         reply('Yo '+ res.access_token);
       }, function(err) {
         console.log(err);
       });
-  }
+    }
 });
 
 server.start(function() {
