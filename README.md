@@ -40,7 +40,7 @@ redirect_uri. If true, the user will not be automatically redirected and will ha
  - **disable_signup** - *Boolean?* - When true (default is false) users will not be able to sign up for a Dropbox account via the authorization page. Instead, the authorization page will show a link to the Dropbox iOS app in the App Store. This is only intended for use when necessary for compliance with App Store policies.
  
  
-  ```javascript
+```javascript
   var dropbox = new Dropbox({
     client_id: "clientId",
     client_secret: "clientSecret",
@@ -50,7 +50,8 @@ redirect_uri. If true, the user will not be automatically redirected and will ha
     disable_signup: "disableSignup",
     require_role: "personal"
     });
-    ```
+```
+
 If you already have the access_token you can pass it to the library through the config object as `config.accessToken` and skip the Authentication process.
 
 ### Authentication
