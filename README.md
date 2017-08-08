@@ -1,14 +1,14 @@
 # JavaScript Library for the Dropbox API v2
 
-##Overview
+## Overview
 This is a JavaScript library for the new Dropbox API, written in JavaScript with some ECMAscript 6 features, suitable for use in both modern browsers and in server-side code running under node.js.
 
-##Dependencies
+## Dependencies
 **dropbox-v2-js** relies on [co](https://github.com/tj/co) for using [generators](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Generator) and [SuperAgent](http://visionmedia.github.io/superagent/), a simple HTTP library that works both on browsers and on node.js.
 
 **dropbox-v2-js** uses [Browserify](http://browserify.org/) to build the browser library.
 
-##Supported Platforms
+## Supported Platforms
 
 This library is tested against the following JavaScript platforms.
 
@@ -18,9 +18,9 @@ This library is tested against the following JavaScript platforms.
 Keep in mind that the versions above are not hard requirements. 
 You may need to provide a [Promise Polyfill](https://github.com/tj/co#platform-compatibility).
 
-##Installation
+## Installation
 
-##Usage
+## Usage
 **dropbox-v2-js** is built over a [constructor pattern](http://javascript.info/tutorial/all-one-constructor-pattern). This means that you should initialize the library with the `new` keyword. For more info, see the [examples](https://github.com/nebulab-io/dropbox-v2-js/tree/master/examples) folder.
 
 ### Initialize
@@ -53,11 +53,11 @@ redirect_uri. If true, the user will not be automatically redirected and will ha
     ```
 If you already have the access_token you can pass it to the library through the config object as `config.accessToken` and skip the Authentication process.
 
-###Authentication
+### Authentication
 
 Dropbox API v2 provides two different flows of authentication: the code flow and the token flow. The first one is suitable to the backend and the second one, to the frontend.
 
-####Code Flow
+#### Code Flow
 The first step is to initialize the library passing `code` as `response_type`. Then you need to generate the Auth URL, which is the Dropbox page that asks for user permission.
 
 After the user grant access to your app, you must receive the access token through the redirect_uri, which is usually `yourdomain.com/auth`:
@@ -93,7 +93,7 @@ app.listen(5050, function () {
 });
 ```
 
-####Token flow
+#### Token flow
 
 The token flow is useful for client apps, since it returns the access token directly on the URI. All you need to do is iniatilize the library with `token` as `response_type`, open the AuthUrl and then grab the variables in the URL with the `getTokenByUrl` method provided by the library.
 
